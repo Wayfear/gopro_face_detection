@@ -24,7 +24,7 @@ while True:
         num+=1
        	nmat, frame = cap.read()
         # print(len(frame))
-        if len(frame)==0:
+        if frame is None:
             continue
         if skip_frame!=0:
             skip_frame-=1
