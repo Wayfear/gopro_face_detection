@@ -17,9 +17,10 @@ cap = cv2.VideoCapture("udp://10.5.5.9:8554")
 num = 0
 skip_frame = 0
 
-count = 0
+
 
 while True:
+    count = 0
     while True:
         num+=1
        	nmat, frame = cap.read()
@@ -39,7 +40,7 @@ while True:
             count += 1
         else:
             count = 0
-        if count>1:
+        if count>0:
             print(str(time.time()) + ' take_video!')
             skip_frame = 100
             gpCam.shoot_video(5)
