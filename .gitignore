@@ -1,5 +1,9 @@
 .ipynb_checkpoints
 __pycache__
+<<<<<<< HEAD
 
 .idea/
 
+=======
+.idea/*
+>>>>>>> 4abda7ab16892567c6adca0f1d830346af12d204
