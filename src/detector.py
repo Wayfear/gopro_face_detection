@@ -61,7 +61,12 @@ def detect_faces(image, min_face_size=20.0,
 
     # collect boxes (and offsets, and scores) from different scales
     bounding_boxes = [i for i in bounding_boxes if i is not None]
-    bounding_boxes = np.vstack(bounding_boxes)
+
+    # early return if bounding_boxes is empty
+    if not bounding_boxes:
+        return bounding_boxes, []
+    else:
+        bounding_boxes = np.vstack(bounding_boxes)
 
     keep = nms(bounding_boxes[:, 0:5], nms_thresholds[0])
     bounding_boxes = bounding_boxes[keep]
