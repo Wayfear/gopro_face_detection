@@ -6,10 +6,16 @@ import numpy as np
 from src import detect_faces, show_bboxes
 from PIL import Image
 import time
-
+sock = None
+restart_flag = False
 while True:
     skip = 4
+    if sock is not None:
+        sock.close()
+        time.sleep(3)
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
     t=time.time()
     gpCam = GoProCamera.GoPro()
     gpCam.syncTime()
@@ -17,18 +23,26 @@ while True:
     cap = cv2.VideoCapture("udp://10.5.5.9:8554")
     num = 0
     skip_frame = 0
-    flag = time.time()
 
     while True:
-        start_time = time.time()
-        if start_time - flag > 10:
+        if restart_flag:
+            restart_flag = False
             break
+        start_time = time.time()
+        flag = time.time()
         count = 0
+
         while True:
             num+=1
+            # frame = None
             nmat, frame = cap.read()
-            # print(len(frame))
+            if flag - start_time > 1:
+                print("Restart!")
+                restart_flag = True
+                break
             if frame is None:
+                print("No frame!")
+                flag = time.time()
                 continue
             if skip_frame!=0:
                 skip_frame-=1
@@ -36,7 +50,6 @@ while True:
                 continue
             if num%skip!=0:
                 continue
-            flag = time.time()
             image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
             bounding_boxes, landmarks = detect_faces(image)
             print(bounding_boxes)
@@ -48,6 +61,8 @@ while True:
                 print(str(time.time()) + ' take_video!')
                 skip_frame = 100
                 gpCam.shoot_video(5)
+                print("Finish!")
+                start_time = time.time()
                 break
 
 
@@ -55,6 +70,8 @@ while True:
                 cv2.rectangle(frame, (int(b[0]), int(b[1])), (int(b[2]), int(b[3])), (55, 255, 155), 2)
 
             cv2.imshow('frame', frame)
+            start_time = time.time()
+            flag = time.time()
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
