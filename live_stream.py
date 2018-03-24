@@ -2,12 +2,24 @@ from goprocam import GoProCamera
 from goprocam import constants
 import cv2
 import socket
-import numpy as np
+from os.path import join
+import os
 from src import detect_faces, show_bboxes
 from PIL import Image
 import time
+import sys
+import yaml
+
 sock = None
 restart_flag = False
+
+project_dir = os.getcwd()
+with open(join(project_dir, 'config.yaml'), 'r') as f:
+    cfg = yaml.load(f)
+
+shoot_duration = cfg['auto_stream']['shoot_hours'] * 3600
+
+start = time.time()
 while True:
     skip = 4
     if sock is not None:
@@ -51,7 +63,9 @@ while True:
             if num%skip!=0:
                 continue
             image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            # start = timeit.default_timer()
             bounding_boxes, landmarks = detect_faces(image)
+            # stop = timeit.default_timer()
             print(bounding_boxes)
             if len(bounding_boxes)>0:
                 count += 1
@@ -62,6 +76,7 @@ while True:
                 skip_frame = 100
                 gpCam.shoot_video(5)
                 print("Finish!")
+                # print('mtcnn process time: {}'.format(stop - start))
                 start_time = time.time()
                 break
 
@@ -78,5 +93,7 @@ while True:
             if time.time() - t >= 2.5:
                 sock.sendto("_GPHD_:0:0:2:0.000000\n".encode(), ("10.5.5.9", 8554))
                 t=time.time()
+
         cv2.destroyAllWindows()
+
 
