@@ -32,7 +32,7 @@ print('connected wifi is {}'.format(wifi))
 for file in reversed(file_list):
     gpCam.downloadMedia(file['dictionary'], file['name'])
     name = datetime.fromtimestamp(int(file['time']))
-    # name = name - timedelta(hours=1)
+    name = name - timedelta(hours=1)
     os.rename(file['name'], join(video_path, '%s_%s.MP4' %(name.strftime('%m-%d-%H-%M-%S'), wifi)))
     gpCam.deleteFile(file['dictionary'], file['name'])
 

@@ -1,3 +1,4 @@
 auto_stream:
-    start_time: '17:43'
-    shoot_hours: 2
+    start_time: '10:16'
+    shoot_hours: 12
+    video_path: '/home/chris/Dropbox/video_scan/codebase/python/video'

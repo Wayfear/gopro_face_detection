@@ -93,9 +93,11 @@ def detect_faces(image, min_face_size=20.0,
 
     keep = nms(bounding_boxes, nms_thresholds[1])
     bounding_boxes = bounding_boxes[keep]
+    return bounding_boxes, []
     bounding_boxes = calibrate_box(bounding_boxes, offsets[keep])
     bounding_boxes = convert_to_square(bounding_boxes)
     bounding_boxes[:, 0:4] = np.round(bounding_boxes[:, 0:4])
+
 
     # STAGE 3
 

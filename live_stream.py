@@ -8,6 +8,7 @@ from src import detect_faces, show_bboxes
 from PIL import Image
 import time
 import sys
+import timeit
 import yaml
 
 sock = None
@@ -63,9 +64,9 @@ while True:
             if num%skip!=0:
                 continue
             image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-            # start = timeit.default_timer()
+            start = timeit.default_timer()
             bounding_boxes, landmarks = detect_faces(image)
-            # stop = timeit.default_timer()
+            stop = timeit.default_timer()
             print(bounding_boxes)
             if len(bounding_boxes)>0:
                 count += 1
@@ -76,7 +77,7 @@ while True:
                 skip_frame = 100
                 gpCam.shoot_video(5)
                 print("Finish!")
-                # print('mtcnn process time: {}'.format(stop - start))
+                print('mtcnn process time: {}'.format(stop - start))
                 start_time = time.time()
                 break
 
